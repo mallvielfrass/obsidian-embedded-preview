@@ -25,7 +25,9 @@
   "author": "mallvielfrass",
   "license": "MIT",
   "dependencies": {
+    "@types/valid-url": "^1.0.7",
     "link-preview-js": "^3.0.5",
-    "sleep-promise": "^9.1.0"
+    "sleep-promise": "^9.1.0",
+    "valid-url": "^1.0.9"
   }
 }

@@ -142,6 +142,7 @@ import {
   PluginSettingTab,
   Setting,
 } from "obsidian";
+import {URLPreviewModal} from "previewModal";
 interface SettingStore {
   ScreenshotSwitchButtonEnabled: boolean;
 }
@@ -150,7 +151,27 @@ const DEFAULT_SETTINGS: SettingStore = {
 };
 export default class EmbeddedPreviewPlugin extends Plugin {
   settings: SettingStore;
-  async onload() {}
+  async onload() {
+    this.registerEvent(
+      this.app.workspace.on("editor-menu", (menu, editor, view) => {
+        menu.addItem((item) => {
+          item
+            .setTitle("add embedded preview")
+            .setIcon("code")
+            .onClick(async () => {
+              new URLPreviewModal(this.app).open();
+            });
+        });
+      })
+    );
+    this.addCommand({
+      id: "open-url-preview-modal",
+      name: "Open URL Preview Modal",
+      callback: () => {
+        new URLPreviewModal(this.app).open();
+      },
+    });
+  }
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   }

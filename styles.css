@@ -6,3 +6,23 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.input-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-container > div {
+    margin-right: 8px;
+    padding-right: 5px;
+  }
+  .header {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+  .fetch-button {
+    cursor: pointer;
+    padding: 10px;
+  }
+  .error {
+   background-color: rgb(122, 6, 6) !important;
+  }
