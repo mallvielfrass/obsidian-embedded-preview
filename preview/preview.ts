@@ -1,7 +1,6 @@
-import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
+import { getLinkPreview } from "link-preview-js";
 
-import sleep from "sleep-promise";
-interface IPreview {
+export interface IPreview {
   url: string;
   title: string;
   description: string;

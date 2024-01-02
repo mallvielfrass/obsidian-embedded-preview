@@ -1,13 +1,41 @@
-import {App, Modal} from "obsidian";
-import {urlPreview} from "preview/preview";
-import {isUri} from "valid-url";
+import { App, Modal } from "obsidian";
+import { IPreview, urlPreview } from "preview/preview";
+
+import { isUri } from "valid-url";
+
 export class URLPreviewModal extends Modal {
   app: App;
   constructor(app: App) {
     super(app);
   }
+  async fetchForm(
+    url: string,
+    inputEl: HTMLInputElement,
+    resultContainer: HTMLDivElement
+  ) {
+    console.log("fetch form", url);
+    resultContainer.empty();
+    if (!isUri(url)) {
+      console.log("url is not valid");
+      inputEl.addClass("error");
+      return;
+    }
+    console.log("url is valid");
+    inputEl.removeClass("error");
+    try {
+      const resp = await urlPreview(url);
+      console.log("resp", resp);
+      this.mountPreview(resp);
+    } catch (error) {
+      console.log("error", error);
+      resultContainer.createEl("div", {
+        text: "Error: " + error,
+        cls: "error",
+      });
+    }
+  }
   onOpen(): void {
-    const {contentEl} = this;
+    const { contentEl } = this;
     let url = "";
     const header = contentEl.createDiv({
       cls: "header",
@@ -35,34 +63,14 @@ export class URLPreviewModal extends Modal {
     });
     const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
     fetchButton.innerHTML = iconSvg;
-    async function fetchForm() {
-      console.log("fetch form", url);
-      resultContainer.empty();
-      if (!isUri(url)) {
-        console.log("url is not valid");
-        inputEl.addClass("error");
-        return;
-      }
-      console.log("url is valid");
-      inputEl.removeClass("error");
-      try {
-        const resp = await urlPreview(url);
-        console.log("resp", resp);
-      } catch (error) {
-        console.log("error", error);
-        resultContainer.createEl("div", {
-          text: "Error: " + error,
-          cls: "error",
-        });
-      }
-    }
+
     fetchButton.addEventListener("click", (event: Event) => {
       // const value = (event.target as HTMLInputElement).value;
-      fetchForm();
+      this.fetchForm(url, inputEl, resultContainer);
     });
     inputEl.addEventListener("keydown", (event: KeyboardEvent) => {
       if (event.key === "Enter") {
-        fetchForm();
+        this.fetchForm(url, inputEl, resultContainer);
       }
     });
     inputEl.addEventListener("input", (event: Event) => {
@@ -72,7 +80,53 @@ export class URLPreviewModal extends Modal {
     });
   }
   onClose(): void {
-    const {contentEl} = this;
+    const { contentEl } = this;
     contentEl.empty();
+  }
+
+  async mountPreview(prev: IPreview) {
+    try {
+      const { contentEl } = this;
+      const frame = contentEl.createDiv();
+      const testDiv = frame.createEl("div", {
+        cls: "test",
+        text: "Test",
+      });
+
+      const previewDiv = await this.createPreviewDiv(prev);
+      frame.appendChild(previewDiv);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+  async createPreviewDiv(data: IPreview): Promise<HTMLDivElement> {
+    const { url, title, description, favicons, images } = data;
+
+    const previewDiv = document.createElement("div");
+    previewDiv.classList.add("preview");
+
+    const imageDiv = previewDiv.createDiv({ cls: "image" });
+    const image = imageDiv.createEl("img", {
+      attr: {
+        src: images[0],
+        alt: "Изображение",
+      },
+    });
+
+    const infoDiv = previewDiv.createDiv({ cls: "info" });
+    const titleEl = infoDiv.createEl("h2", { cls: "title", text: title });
+    const descriptionEl = infoDiv.createEl("p", {
+      cls: "description",
+      text: description,
+    });
+    const link = infoDiv.createEl("a", {
+      cls: "link",
+      attr: {
+        href: url,
+      },
+      text: "Перейти",
+    });
+
+    return previewDiv;
   }
 }
