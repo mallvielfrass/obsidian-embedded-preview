@@ -198,21 +198,23 @@ export class PreviewFrame {
         return;
       }
 
-      const line = editor.editor?.getLine;
-      if (!line) {
-        console.log("no line");
-        return;
-      }
+      //   const line = editor.editor?.getLine;
+      //   if (!line) {
+      //     console.log("no line");
+      //     return;
+      //   }
 
-      //set cursor to end of line
-      editor.editor?.setCursor({
-        line: editor.editor.lastLine() || 0,
-        ch: editor.editor.getLine(editor.editor.lastLine() || 0).length || 0,
-      });
+      //   //set cursor to end of line
+      //   editor.editor?.setCursor({
+      //     line: editor.editor.lastLine() || 0,
+      //     ch: editor.editor.getLine(editor.editor.lastLine() || 0).length || 0,
+      //   });
       //  console.log("set cursor");
       //add new line
       //editor.editor?.setValue("\n");
-      editor.editor?.setValue(this.urlFrame.outerHTML);
+      editor.editor?.setValue(
+        editor.editor?.getValue() + "\n" + this.urlFrame.outerHTML
+      );
       //close modal
       this.closeBind();
     });
