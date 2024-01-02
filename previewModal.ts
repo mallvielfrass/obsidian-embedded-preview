@@ -90,12 +90,19 @@ export class URLPreviewModal extends Modal {
     try {
       const { contentEl } = this;
       const frame = contentEl.createDiv();
-      const testDiv = frame.createEl("div", {
-        cls: "test",
-        text: "Test",
-      });
+      //   const testDiv = frame.createEl("div", {
+      //     cls: "test",
+      //     text: "Test",
+      //   });
 
-      const previewDiv = new PreviewFrame(frame, prev); //await this.createPreviewDiv(prev);
+      const previewDiv = new PreviewFrame(
+        app,
+        () => {
+          this.close();
+        },
+        frame,
+        prev
+      ); //await this.createPreviewDiv(prev);
       // frame.appendChild(previewDiv);
     } catch (error) {
       console.log("error", error);

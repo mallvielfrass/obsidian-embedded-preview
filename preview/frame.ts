@@ -1,10 +1,13 @@
+import { App } from "obsidian";
 import { IPreview } from "./preview";
 
 export class PreviewFrame {
+  app: App;
   container: HTMLDivElement;
   urlFrame: HTMLDivElement;
   settingsFrame: HTMLDivElement;
   data: IPreview;
+  closeBind: () => void;
   previewFrameBlocks: {
     title: HTMLDivElement;
     description: HTMLDivElement;
@@ -30,7 +33,13 @@ export class PreviewFrame {
     };
   };
 
-  constructor(container: HTMLDivElement, data: IPreview) {
+  constructor(
+    app: App,
+    closeBind: () => void,
+    container: HTMLDivElement,
+    data: IPreview
+  ) {
+    this.app = app;
     this.container = container;
     this.data = data;
     this.style = {
@@ -47,6 +56,8 @@ export class PreviewFrame {
     };
     //    this.settingsFrame = this.createSettingsFrame();
     this.urlFrame = this.defaultFrame();
+    this.insertHtmlFrame();
+    this.closeBind = closeBind;
   }
   createSettingsFrame(): HTMLDivElement {
     const settingsFrame = this.container.createDiv();
@@ -172,5 +183,38 @@ export class PreviewFrame {
     });
 
     return frame;
+  }
+  async insertHtmlFrame() {
+    const btnContainer = this.container.createDiv();
+    const btn = btnContainer.createEl("button", {
+      cls: "btn",
+      text: "insert preview",
+    });
+    btn.addEventListener("click", () => {
+      console.log("click");
+      const editor = this.app.workspace.activeEditor;
+      if (!editor) {
+        console.log("no editor");
+        return;
+      }
+
+      const line = editor.editor?.getLine;
+      if (!line) {
+        console.log("no line");
+        return;
+      }
+
+      //set cursor to end of line
+      editor.editor?.setCursor({
+        line: editor.editor.lastLine() || 0,
+        ch: editor.editor.getLine(editor.editor.lastLine() || 0).length || 0,
+      });
+      //  console.log("set cursor");
+      //add new line
+      //editor.editor?.setValue("\n");
+      editor.editor?.setValue(this.urlFrame.outerHTML);
+      //close modal
+      this.closeBind();
+    });
   }
 }
