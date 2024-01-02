@@ -2,6 +2,7 @@ import { App, Modal } from "obsidian";
 import { IPreview, urlPreview } from "preview/preview";
 
 import { isUri } from "valid-url";
+import { PreviewFrame } from "./preview/frame";
 
 export class URLPreviewModal extends Modal {
   app: App;
@@ -55,6 +56,7 @@ export class URLPreviewModal extends Modal {
       attr: {
         type: "text",
         placeholder: "Enter URL",
+        value: url,
       },
     });
     //run button with icon play
@@ -93,41 +95,10 @@ export class URLPreviewModal extends Modal {
         text: "Test",
       });
 
-      const previewDiv = await this.createPreviewDiv(prev);
-      frame.appendChild(previewDiv);
+      const previewDiv = new PreviewFrame(frame, prev); //await this.createPreviewDiv(prev);
+      // frame.appendChild(previewDiv);
     } catch (error) {
       console.log("error", error);
     }
-  }
-  async createPreviewDiv(data: IPreview): Promise<HTMLDivElement> {
-    const { url, title, description, favicons, images } = data;
-
-    const previewDiv = document.createElement("div");
-    previewDiv.classList.add("preview");
-
-    const imageDiv = previewDiv.createDiv({ cls: "image" });
-    const image = imageDiv.createEl("img", {
-      cls: "preview-image",
-      attr: {
-        src: images[0],
-        alt: "Изображение",
-      },
-    });
-
-    const infoDiv = previewDiv.createDiv({ cls: "info" });
-    //  const titleEl = infoDiv.createEl("h2", { cls: "title", text: title });
-    const link = infoDiv.createEl("a", {
-      attr: {
-        href: url,
-      },
-      cls: "title",
-      text: title,
-    });
-    const descriptionEl = infoDiv.createEl("p", {
-      cls: "description",
-      text: description,
-    });
-
-    return previewDiv;
   }
 }
