@@ -107,6 +107,7 @@ export class URLPreviewModal extends Modal {
 
     const imageDiv = previewDiv.createDiv({ cls: "image" });
     const image = imageDiv.createEl("img", {
+      cls: "preview-image",
       attr: {
         src: images[0],
         alt: "Изображение",
@@ -114,17 +115,17 @@ export class URLPreviewModal extends Modal {
     });
 
     const infoDiv = previewDiv.createDiv({ cls: "info" });
-    const titleEl = infoDiv.createEl("h2", { cls: "title", text: title });
-    const descriptionEl = infoDiv.createEl("p", {
-      cls: "description",
-      text: description,
-    });
+    //  const titleEl = infoDiv.createEl("h2", { cls: "title", text: title });
     const link = infoDiv.createEl("a", {
-      cls: "link",
       attr: {
         href: url,
       },
-      text: "Перейти",
+      cls: "title",
+      text: title,
+    });
+    const descriptionEl = infoDiv.createEl("p", {
+      cls: "description",
+      text: description,
     });
 
     return previewDiv;
