@@ -28,6 +28,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@types/valid-url": "^1.0.7",
+		"image-decode": "^1.2.2",
 		"link-preview-js": "^3.0.5",
 		"request-promise": "^4.2.6",
 		"sleep-promise": "^9.1.0",

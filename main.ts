@@ -120,6 +120,7 @@
 
 // 		containerEl.empty();
 
+import { ImageLoaderModal } from "./imageLoaderModal";
 // 		new Setting(containerEl)
 // 			.setName('Setting #1')
 // 			.setDesc('It\'s a secret')
@@ -132,17 +133,9 @@
 // 				}));
 // 	}
 // }
-import {
-  App,
-  Editor,
-  MarkdownView,
-  Modal,
-  Notice,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-} from "obsidian";
-import {URLPreviewModal} from "previewModal";
+import { Plugin } from "obsidian";
+import { URLPreviewModal } from "previewModal";
+
 interface SettingStore {
   ScreenshotSwitchButtonEnabled: boolean;
 }
@@ -164,6 +157,14 @@ export default class EmbeddedPreviewPlugin extends Plugin {
         });
       })
     );
+    //command open-image-loader-modal
+    this.addCommand({
+      id: "open-image-loader-modal",
+      name: "Open Image Loader Modal",
+      callback: () => {
+        new ImageLoaderModal(this.app).open();
+      },
+    });
     this.addCommand({
       id: "open-url-preview-modal",
       name: "Open URL Preview Modal",
